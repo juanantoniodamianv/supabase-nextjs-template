@@ -1,62 +1,108 @@
-# Supabase + Next.js + flowbite
+# Supabase + Next.js + Tailwind + Flowbite
 
-This is a template that includes:
+This template uses [Supabase](https://supabase.com/docs), [Next.js](https://nextjs.org/docs), and [Flowbite](https://flowbite.com/docs). Refer to their respective documentation for more information on how to use them effectively.
 
-- Supabase: with Email, Google and Facebook authentication
-- Next.js + flowbite
-- Create a project in Google and Facebook to retrieve the auth keys and vinculate them onto Supabase Auth UI
+This project is not intended to serve as documentation for Supabase or Next.js, except for providing some basic commands to get you started. For comprehensive guidance, please consult the official documentation.
 
-This project uses [Supabase](https://supabase.com/docs) and [Next.js](https://nextjs.org/docs). Refer to the documentation for more information on how to use them.
+**Important: Docker is required to run Supabase locally, and it requires at least 7GB of memory.**
 
-This project is not intended to be a Supabase or Next documentation project (solo algunos comandos para arrancar o salir del paso). Instead you should use the proper documentation to understand them.
+## First Steps
 
-**Important: Docker is required to run Supabase locally and it requires at least 7GB of memory.**
+1. **Create a New Project in Supabase**
 
-## Setup
+2. **Configure Authentication**
 
-- Copy the file `.env.local-example` into a new file `.env.local` and replace the variables with your own.
-- Run `npm install --include=optional` to install dependencies.
+   - Create new projects in Google and Facebook developer platforms to retrieve the authentication keys.
+   - Link these keys to the Supabase Auth UI.
+
+3. **Environment Configuration**
+
+   - Copy `.env.local-example` to a new file named `.env.local` and replace the placeholder variables with your own values.
+
+4. **Install Dependencies**
+   - Run `npm install --include=optional` to install all necessary dependencies.
 
 ## Run Supabase Locally
 
-For a quick setup, we are using `npx`.
+For a quick setup, we use `npx`.
 
-- `npx supabase start` (Requires Docker running locally and at least 7GB of memory ram)
-  - After this step, you will see output containing your local Supabase credentials. Use `npx supabase status` to retrieve your credentials again.
-- Connect Supabase to a local database:
-  - `npx supabase login`
-  - `npx supabase link --project-ref <reference-id>` (Find the reference ID in the Supabase Dashboard of your project.)
+1. **Start Supabase**
 
-Migrations (see the database migration guide: [Supabase Database Migration Guide](https://supalaunch.com/blog/nextjs-supabase-database-migration-guide))
+   - Run `npx supabase start` (Docker must be running locally with at least 7GB of RAM available).
+   - After this step, you'll see output containing your local Supabase credentials. Use `npx supabase status` to retrieve these credentials again if needed.
 
-- Create a new migration with `npx supabase migration new create_new_migration_name` and edit the migration file.
-- Apply migrations remotely; this also runs seeds:
-  - `npx supabase db reset --linked`
-- Apply migrations locally; this also runs seeds:
-  - `npx supabase db reset --local`
+2. **Connect Supabase to a Local Database**
+
+   - Login with `npx supabase login`.
+   - Link your project with `npx supabase link --project-ref <reference-id>` (Find the reference ID in the Supabase Dashboard of your project).
+
+3. **Migrations**
+
+   - For database migration guidance, refer to the [Supabase Database Migration Guide](https://supalaunch.com/blog/nextjs-supabase-database-migration-guide).
+
+   - Create a new migration: `npx supabase migration new create_new_migration_name` and edit the migration file as needed.
+
+   - Apply migrations remotely (this also runs seeds):
+
+     - `npx supabase db reset --linked`
+
+   - Apply migrations locally (this also runs seeds):
+     - `npx supabase db reset --local`
 
 ## New DB Migration and Push Changes from Local to Supabase
 
-Before starting, it is recommended to pull the changes from Supabase first.
+Before starting, it is recommended to pull the latest changes from Supabase.
 
-- Use `npx supabase db pull` to pull the changes into your local environment (it creates a new migration with the changes if they exist).
-- Create a new migration with `npx supabase migration new create_new_migration_name` and edit the migration file in `./supabase/migrations/`.
-- Run `npx supabase db reset --local` to apply migrations locally.
-- Run `npx supabase db reset --linked` to apply migrations on Supabase.
-- If none of both (local or linked) is specified, then --local will be used as default.
+1. **Pull Changes**
+
+   - Use `npx supabase db pull` to synchronize changes to your local environment (creates a new migration with changes if they exist).
+
+2. **Create and Apply a New Migration**
+
+   - Create a new migration: `npx supabase migration new create_new_migration_name` and edit the migration file in `./supabase/migrations/`.
+
+3. **Apply Migrations Locally**
+
+   - Run `npx supabase db reset --local`.
+
+4. **Apply Migrations on Supabase**
+
+   - Run `npx supabase db reset --linked`.
+
+   - If neither `--local` nor `--linked` is specified, `--local` will be used by default.
 
 ## New DB Migration and Pull Changes from Supabase to Local
 
-- Create a new database in Supabase.
-- Use `npx supabase db pull` to pull the changes into your local environment (it creates a new migration with the changes).
-- Run `npx supabase db reset --local` to apply migrations locally.
+1. **Create a New Database in Supabase**
+
+2. **Pull Changes**
+
+   - Use `npx supabase db pull` to synchronize changes to your local environment (creates a new migration with changes).
+
+3. **Apply Migrations Locally**
+   - Run `npx supabase db reset --local`.
 
 ## FAQ
 
-- If problems with 'not healthy checks' running `npx supabase start` try disabling `npx supabase start --ignore-health-check`
-- Make sure to use Node 20.
-- En Supabase UI ya no se pueden crear triggers a tablas privadas. Para solucionar este problema tienes que ir a la opcion de "SQL Editor" y copiar el siguiente comando, ej:
-  `create trigger on_auth_insert_users after insert on auth.users for each row execute function insert_user_in_public_table_for_new_user();`
-  luego le das RUN en la esquina inferior derecha (o ctrl + enter) y ya te aparecera el triger creado correctamente.
-- Para visualizar logs referentes a Postgres, refiera se a Logs->Postgres
-- UI: https://flowbite.com/blocks/
+- **'Not Healthy Checks' Issue**
+
+  - If you encounter problems with 'not healthy checks' when running `npx supabase start`, try disabling them: `npx supabase start --ignore-health-check`.
+
+- **Node.js Version**
+
+  - Ensure you are using Node.js version 20.
+
+- **Creating Triggers in Supabase**
+
+  - Triggers can no longer be created on private tables via the Supabase UI. To resolve this, go to the "SQL Editor" and use the following command, for example:
+
+    ```sql
+    CREATE TRIGGER on_auth_insert_users
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE FUNCTION insert_user_in_public_table_for_new_user();
+    ```
+
+    - Then click **RUN** in the bottom-right corner (or press **Ctrl + Enter**) to create the trigger successfully.
+
+- **Viewing PostgreSQL Logs**
+  - To view logs related to PostgreSQL, navigate to **Logs > Postgres**.
